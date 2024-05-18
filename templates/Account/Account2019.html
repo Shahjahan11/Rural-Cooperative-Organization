@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'Css/Account.css' %}">
+</head>
+<body>
+    
+    <h1 id="year">Year-2019</h1>
+    <ul class="pager">
+        
+        <li><a href="{% url 'AccounT2018' %}">Previous</a></li>
+        <li><a href="{% url 'AccounT2020' %}">Next</a></li>
+
+    </ul>
+    <table class="table" id="data-table">
+        <thead>
+            <tr>
+                <th>Member</th>
+                <th>Jan</th>
+                <th>Feb</th>
+                <th>Mar</th>
+                <th>Apr</th>
+                <th>May</th>
+                <th>Jun</th>
+                <th>Jul</th>
+                <th>Aug</th>
+                <th>Sep</th>
+                <th>Oct</th>
+                <th>Nov</th>
+                <th>Dec</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for member in members %}
+                <tr>
+                    <td>{{ member }}</td>
+                    {% for month in months %}
+                        <td>
+                            <input class="cell_value {{ member }}" type="number" id="{{ member }}{{ month }}" name="{{ member }}{{ month }}" value="0">
+                        </td>
+                    {% endfor %}
+                    <td id="total_{{ member }}" > 0</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+
+            $('.cell_value').on('input', function() {
+                var cellId = $(this).attr('id');
+                var cellValue = $(this).val();
+                var memberId = cellId.substring(0, cellId.length - 3);
+                var month = cellId.substring(cellId.length - 3);
+                updateRowTotal(memberId);
+                var year_text = $("#year").text();
+                var parts = year_text.split('-');
+                var year = parts[1];
+                send_to_backend(year,month,memberId,cellValue);
+            });
+        
+            function updateRowTotal(memberId) {
+                var rowTotal = 0;
+                $('input.cell_value.' + memberId).each(function() {
+                    rowTotal += parseFloat($(this).val()) || 0;
+                });
+                        $('#total_' + memberId).text(rowTotal);
+            }
+
+            function send_to_backend(year,month,member,cell_val)
+            {
+                console.log(year,month,member,cell_val);
+                $.ajax({
+                    type: 'POST',
+                    url: '{% url 'save_payment' %}',
+                    data: {                    
+                        csrfmiddlewaretoken: '{{ csrf_token }}',
+                        'year':year,'member':member,'month':month,'value':cell_val} ,
+                    success: function(response) {
+                        console.log('Data saved successfully:', response);
+                    },
+                    error: function(error) {
+                        console.log('Error saving data:', error);
+                    }
+                });
+            }
+            var dic={{payments|safe}};
+
+           $('.cell_value').each(function() {
+            var cellId = $(this).attr('id');
+                        var cellValue = $(this).val();
+                        var memberId = cellId.substring(0, cellId.length - 3);
+                        var month = cellId.substring(cellId.length - 3);
+                        var year_text = $("#year").text();
+                        var parts = year_text.split('-');
+                        var year = parts[1];
+                        var key= year+memberId+month;
+                        updateRowTotal(memberId);
+                if (dic.hasOwnProperty(key)) {
+                $(this).val(dic[key]);
+                console.log(dic[key]);
+                }
+            });
+        });
+
+
+        
+    </script>
+</body>
+</html>

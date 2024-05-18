@@ -1,0 +1,27 @@
+# complains_list.html
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Complaints List</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'Css/Complain.css' %}">
+</head>
+<body>
+    <h1>Complaints List</h1>
+    <ul>
+        {% for complaint in complaints %}
+        <li>
+            <strong>Name:</strong> {{ complaint.name }}<br>
+            <strong>Email:</strong> {{ complaint.email }}<br>
+            <strong>Content:</strong> {{ complaint.content }}<br>
+            <strong>Status:</strong> {{ complaint.status }}<br>
+            <strong>Submitted at:</strong> {{ complaint.created_at }}<br>
+        </li>
+        {% empty %}
+        <li>No complaints found.</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
