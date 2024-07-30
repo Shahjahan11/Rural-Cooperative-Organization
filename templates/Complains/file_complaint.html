@@ -1,0 +1,19 @@
+<!-- file_complaint.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Submit a Complaint</title>
+</head>
+<body>
+    {% block content %}
+      <h2>File a Complaint</h2>
+      <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Submit Complaint</button>
+      </form>
+    {% endblock %}
+</body>
+</html>

@@ -1,4 +1,4 @@
-# complains_list.html
+<!-- complaints_list.html -->
 
 {% load static %}
 <!DOCTYPE html>
@@ -9,19 +9,20 @@
     <link rel="stylesheet" type="text/css" href="{% static 'Css/Complain.css' %}">
 </head>
 <body>
-    <h1>Complaints List</h1>
-    <ul>
-        {% for complaint in complaints %}
-        <li>
-            <strong>Name:</strong> {{ complaint.name }}<br>
-            <strong>Email:</strong> {{ complaint.email }}<br>
-            <strong>Content:</strong> {{ complaint.content }}<br>
-            <strong>Status:</strong> {{ complaint.status }}<br>
-            <strong>Submitted at:</strong> {{ complaint.created_at }}<br>
-        </li>
-        {% empty %}
-        <li>No complaints found.</li>
+    {% block content %}
+      <h2>My Complaints</h2>
+      <a href="{% url 'file_complaint' %}">File a new complaint</a>
+      <ul>
+        {% for complaint in Complaints %}
+          <li>
+            <strong>{{ complaint.title }}</strong> - {{ complaint.date_filed }}<br>
+            {{ complaint.description }}
+          </li>
         {% endfor %}
-    </ul>
+      </ul>
+    {% endblock %}
 </body>
 </html>
+
+
+

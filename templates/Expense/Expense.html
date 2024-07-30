@@ -7,11 +7,33 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Expense page</title>
     <link rel="stylesheet" href="{% static 'Css/Expense.css' %}">
+    <link rel="stylesheet" href="{% static 'Css/About.css' %}">
+
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 
 </head>
 
 <body>
+    <div class="topnav">
+        <a class="active" href="#">EYFDO</a>
+        <a href="{% url 'AbouT' %}">About</a>
+        <a href="{% url 'MemberS' %}">Members</a>
+        <a href="{% url 'account2023' %}">Accounts</a>
+        <a href="{% url 'InteresT' %}">Interest</a>
+        <a href="{% url 'ExpensE' %}">Expenses</a>
+        <a href="{% url 'InvesT' %}">Investment</a>
+        <a href="{% url 'DashboarD' %}">Financial Dashboard</a>
+        {% if request.user.is_authenticated %}
+        <button style="background-color: #4CAF50; color: white;" class="btn-primary">
+          <a href="#" style="color: inherit; text-decoration: none;">Hello, {{request.user}}</a>
+        </button>
+        
+    {%endif%}
+    <button style="background-color: #FF5733; color: white;" class="btn-primary">
+      <a href="{% url 'logout' %}" style="color: inherit; text-decoration: none;">Logout</a>
+    </button>
+      </div>
+
     <h1 class="oporer_part" id="hoyna">EYFDO's Expense</h1>
 
     <table>
@@ -111,7 +133,6 @@ function insertNewRecord(data) {
     var table = document.getElementById("storeList").getElementsByTagName('tbody')[0];
     var newRow = table.insertRow(table.length);
     
-    // Set the data-expense-id attribute with a unique value (you may need to adjust this based on your actual data)
     newRow.setAttribute("data-expense-id", "newExpense" + Math.random().toString(36).substring(7));
 
     cell1 = newRow.insertCell(0);
@@ -133,7 +154,7 @@ function formatDate(date) {
     var parsedDate = new Date(dateFromTableCell);
 
     var year = parsedDate.getFullYear();
-    var month = ('0' + (parsedDate.getMonth() + 1)).slice(-2); // Adding 1 because months are zero-indexed
+    var month = ('0' + (parsedDate.getMonth() + 1)).slice(-2); 
     var day = ('0' + parsedDate.getDate()).slice(-2);
 
     var formattedDate = year + '-' + month + '-' + day;
@@ -149,7 +170,7 @@ function onEdit(td) {
     document.getElementById("perPrice").value = selectedRow.cells[3].innerHTML;
 }
 
-//Reset the data
+
 function resetForm() {
     document.getElementById("productCode").value = '';
     document.getElementById("product").value = '';
@@ -159,7 +180,6 @@ function resetForm() {
 }
 
 
-// Update record
 function updateRecord(formData) {
     $.ajax({
         type: 'POST',
@@ -172,7 +192,7 @@ function updateRecord(formData) {
             perPrice: formData.perPrice
         },
         success: function(response) {
-            console.log(response);  // Log the response for debugging
+            console.log(response);  
             if (response.status === 'success') {
                 selectedRow.cells[0].innerHTML = formData.productCode;
                 selectedRow.cells[1].innerHTML = formData.product;
@@ -184,7 +204,7 @@ function updateRecord(formData) {
             }
         },
         error: function(xhr, status, error) {
-            console.error(error);  // Log the error for debugging
+            console.error(error); 
             alert('Failed to update expense. Please try again.');
         }
     });
@@ -202,7 +222,8 @@ function onDelete(td) {
                 csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
             },
             success: function(response) {
-                console.log(response);  // Log the response for debugging
+                console.log(response);  
+
                 if (response.status === 'success') {
                     document.getElementById('storeList').deleteRow(row.rowIndex);
                     resetForm();
@@ -211,7 +232,7 @@ function onDelete(td) {
                 }
             },
             error: function(xhr, status, error) {
-                console.error(error);  // Log the error for debugging
+                console.error(error);  
                 alert('Failed to delete expense. Please try again.');
             }
         });
