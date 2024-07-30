@@ -5,10 +5,20 @@ from .forms import InterestForm
 from .models import Interest
 from django.http import JsonResponse
 from django.http import HttpResponseBadRequest
+from django.http import HttpResponse
+
 
 
 def INTEREST(request):
     if request.method == 'POST':
+
+        group = None
+        if request.user.groups.exists():
+            group = list(request.user.groups.all())[0].name
+            print(group)
+        if group != 'admin':
+            return HttpResponse("You Don't Have Access")
+
         form = InterestForm(request.POST)
         print(form)
         if form.is_valid():
@@ -23,6 +33,13 @@ def INTEREST(request):
 
 
 def edit_interest(request, interest_id):
+
+    group = None
+    if request.user.groups.exists():
+            group = list(request.user.groups.all())[0].name
+       
+    if group != 'admin':
+            return HttpResponse("You Don't Have Access")
     
     try:
         interest = Interest.objects.get(pk=interest_id)
@@ -38,6 +55,13 @@ def edit_interest(request, interest_id):
 
 
 def delete_interest(request, interest_id):
+
+    group = None
+    if request.user.groups.exists():
+            group = list(request.user.groups.all())[0].name
+    if group != 'admin':
+            return HttpResponse("You Don't Have Access")
+
     try:
         interest = Interest.objects.get(pk=interest_id)
         print(f"Deleting interest: {interest}")
