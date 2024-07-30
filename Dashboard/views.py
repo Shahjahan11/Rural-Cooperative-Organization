@@ -6,7 +6,6 @@ from Expense.models import Expense
 from Interest.models import Interest
 from Invest.models import Invest
 
-# Create your views here.
 
 def DASHBOARD(request):
     tmp = Payment.objects.all()
