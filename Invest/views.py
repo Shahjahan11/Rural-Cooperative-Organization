@@ -4,15 +4,24 @@ from .forms import InvestForm
 from .models import Invest
 from django.http import JsonResponse
 from django.http import HttpResponseBadRequest
-
+from django.http import HttpResponse
 
 def INVEST(request):
     if request.method == 'POST':
+
+        group = None
+        if request.user.groups.exists():
+            group = list(request.user.groups.all())[0].name
+        print(group)
+        if group != 'admin':
+            return HttpResponse("You Don't Have Access")
+        
+        
         form = InvestForm(request.POST)
         print(form)
         if form.is_valid():
             form.save()
-            return redirect('InvesT')  # Redirect to the expense page after submission
+            return redirect('InvesT')  
     else:
         form = InvestForm()
 
@@ -23,7 +32,15 @@ def INVEST(request):
 
 def edit_invest(request, invest_id):
     
+    
+    group = None
+    if request.user.groups.exists():
+        group = list(request.user.groups.all())[0].name
+    if group!= 'admin':
+       return HttpResponse("You Don't Have Access")
     try:
+    
+        
         invest = Invest.objects.get(pk=invest_id)
         invest.person = request.POST.get('productCode')
         invest.description = request.POST.get('product')
@@ -37,6 +54,13 @@ def edit_invest(request, invest_id):
 
 
 def delete_invest(request, invest_id):
+
+    group = None
+    if request.user.groups.exists():
+        group = list(request.user.groups.all())[0].name
+    if group!= 'admin':
+       return HttpResponse("You Don't Have Access")
+   
     try:
         invest = Invest.objects.get(pk=invest_id)
         print(f"Deleting invest: {invest}")
